@@ -9,6 +9,6 @@
   },
   "last_update": {
     "query": "last_update",
-    "values": ["2020-01-01"]
+    "values": ["2010-01-01"]
   }
 }

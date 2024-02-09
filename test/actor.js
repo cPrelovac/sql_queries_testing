@@ -11,12 +11,67 @@ describe("Actor table", function () {
   beforeEach(async function () {
     table = await queries.cloneTable("actor");
   });
-  it(`Check if ${last_name} shows ${last_name_values[0]}`, async function () {
+  it("Test Case 1: Select all actors", async function () {
+    try {
+      const result = await queries.executeQuery({ tableName: table });
+      expect(result).to.be.an("array");
+      expect(result.length).to.be.above(0);
+      result.forEach((row) => {
+        expect(
+          (typeof row.first_name === "string" ||
+            typeof row.first_name === null ||
+            typeof row.first_name === undefined) &&
+            (typeof row.last_name === "string" ||
+              typeof row.last_name === null ||
+              typeof row.last_name === undefined) &&
+            typeof row.actor_id === "number"
+        ).to.be.true;
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  });
+  it("Test Case 2: Select an actor by ID", async function () {
     try {
       const result = await queries.executeQuery({
-        tableName: "actor",
+        tableName: table,
+        query: ["actor_id"],
+        values: [1],
+      });
+      expect(result).to.be.an("array");
+      expect(result.length).to.be.above(0);
+      result.forEach((row) => {
+        expect(row.actor_id).to.equal(1);
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  });
+  it(`Test Case 3: Select actors with a specific first name`, async function () {
+    try {
+      const result = await queries.executeQuery({
+        tableName: table,
+        query: [first_name],
+        values: first_name_values,
+      });
+      expect(result).to.be.an("array");
+      expect(result.length).to.be.above(0);
+      result.forEach((row) => {
+        expect(row.first_name).to.equal(first_name_values[0]);
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  });
+  it(`Test Case 4: Select actors with a specific last name`, async function () {
+    try {
+      const result = await queries.executeQuery({
+        tableName: table,
         query: [last_name],
-        values: CONFIG.last_name.values,
+        values: last_name_values,
       });
       expect(result).to.be.an("array");
       expect(result.length).to.be.above(0);
@@ -29,27 +84,30 @@ describe("Actor table", function () {
       throw err;
     }
   });
-  it(`Check if ${first_name} shows ${first_name_values[0]}`, async function () {
+  it(`Test Case 5: Select actors updated after a specific date`, async function () {
     try {
       const result = await queries.executeQuery({
-        tableName: "actor",
-        query: [first_name],
-        values: CONFIG.first_name.values,
+        tableName: table,
+        query: [last_update],
+        values: [`>${last_update_values[0]}`],
       });
       expect(result).to.be.an("array");
       expect(result.length).to.be.above(0);
       result.forEach((row) => {
-        expect(row.first_name).to.equal("Penelope");
+        const returnedDate = new Date(row.last_update).getTime();
+        const expectedDate = new Date(last_update_values[0]).getTime();
+        console.log(returnedDate, expectedDate);
+        expect(returnedDate).to.be.greaterThan(expectedDate);
       });
     } catch (err) {
       console.error(err);
       throw err;
     }
   });
-  it(`Check if ${first_name} AND ${last_name} shows ${first_name_values[0]} AND ${last_name_values[0]}`, async function () {
+  it(`Test Case 6: Select actors with a specific first name and last name`, async function () {
     try {
       const result = await queries.executeQuery({
-        tableName: "actor",
+        tableName: table,
         query: [first_name, last_name],
         values: [first_name_values[0], last_name_values[0]],
         operator: "AND",
@@ -67,18 +125,36 @@ describe("Actor table", function () {
       throw err;
     }
   });
-  it(`Check if ${first_name} AND ${last_update} shows ${first_name_values[0]} AND >${last_update_values[0]}`, async function () {
+  it(`Test Case 7: Count the number of actors with a specific first name`, async function () {
     try {
-      const result = await queries.executeQuery({
-        tableName: "actor",
-        query: [first_name, last_update],
-        values: [first_name_values[0], `>${last_update_values[0]}`],
-        operator: "AND",
+      const result = await queries.getFunctionsFromTable({
+        tableName: table,
+        operator: "count",
+        conditions: [{ column: "first_name", value: first_name_values[0] }],
       });
+
       expect(result).to.be.an("array");
-      expect(result.length).to.be.eq(0);
+      expect(result.length).to.be.eq(1);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  });
+  it(`Test Case 8: Select actors with a first name that starts with a specific letter`, async function () {
+    try {
+      const result = await queries.likeOperator({
+        tableName: table,
+        columnName: "first_name",
+        option: "START",
+        character: "j",
+      });
+      console.log(result);
+      expect(result).to.be.an("array");
+      expect(result.length).to.be.above(0);
       result.forEach((row) => {
-        expect(row.first_name).to.not.be.eq(null);
+        expect(row.first_name)
+          .to.be.a("string")
+          .and.satisfy((string) => string.startsWith("J"));
       });
     } catch (err) {
       console.error(err);
