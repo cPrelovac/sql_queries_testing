@@ -96,7 +96,6 @@ describe("Actor table", function () {
       result.forEach((row) => {
         const returnedDate = new Date(row.last_update).getTime();
         const expectedDate = new Date(last_update_values[0]).getTime();
-        console.log(returnedDate, expectedDate);
         expect(returnedDate).to.be.greaterThan(expectedDate);
       });
     } catch (err) {
@@ -148,7 +147,6 @@ describe("Actor table", function () {
         option: "START",
         character: "j",
       });
-      console.log(result);
       expect(result).to.be.an("array");
       expect(result.length).to.be.above(0);
       result.forEach((row) => {
