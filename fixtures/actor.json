@@ -1,0 +1,14 @@
+{
+  "first_name": {
+    "query": "first_name",
+    "values": ["Penelope"]
+  },
+  "last_name": {
+    "query": "last_name",
+    "values": ["Guiness"]
+  },
+  "last_update": {
+    "query": "last_update",
+    "values": ["2020-01-01"]
+  }
+}
