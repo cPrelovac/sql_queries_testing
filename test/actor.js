@@ -159,6 +159,45 @@ describe("Actor table", function () {
       throw err;
     }
   });
+  it(`Test Case 9: Select actors with a first name that ends with a specific letter`, async function () {
+    try {
+      const result = await queries.likeOperator({
+        tableName: table,
+        columnName: "first_name",
+        option: "END",
+        character: "e",
+      });
+      console.log(result);
+      expect(result).to.be.an("array");
+      expect(result.length).to.be.above(0);
+      result.forEach((row) => {
+        expect(row.first_name)
+          .to.be.a("string")
+          .and.satisfy((string) => string.endsWith("e"));
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  });
+  it(`Test Case 10: Select actors with a first name that ends with a specific letter`, async function () {
+    try {
+      const result = await queries.likeOperator({
+        tableName: table,
+        columnName: "first_name",
+        option: "CONTAINS",
+        character: "e",
+      });
+      expect(result).to.be.an("array");
+      expect(result.length).to.be.above(0);
+      result.forEach((row) => {
+        expect(row.first_name).to.be.a("string").and.to.contain("e");
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  });
   afterEach(async function () {
     await queries.deleteTable(table);
   });

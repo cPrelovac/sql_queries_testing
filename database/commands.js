@@ -19,6 +19,36 @@ const queries = {
       console.error(err.stack);
     }
   },
+  insertInto: async ({ tableName, columns, values }) => {
+    try {
+      // Check if tableName and values are provided
+      if (!tableName || !values) {
+        throw new Error("Table name and values are required!");
+      }
+
+      // Format values for SQL query
+      const formattedValues = values
+        .map((value) =>
+          value === null || value === undefined
+            ? "NULL"
+            : typeof value === "string"
+            ? `'${value}'`
+            : value
+        )
+        .join(", ");
+
+      // Construct the SQL query
+      let sqlQuery = `INSERT INTO ${tableName} (${
+        columns ? columns.join(", ") : ""
+      }) VALUES (${formattedValues})`;
+
+      const res = await client.query(sqlQuery);
+      return res;
+    } catch (err) {
+      // console.error(err.stack);
+      throw err;
+    }
+  },
   executeQuery: async ({ tableName, columns, values, operator, query }) => {
     try {
       let sqlQuery = `SELECT ${
@@ -70,7 +100,7 @@ const queries = {
     if (option.toUpperCase() === "START") {
       sqlQuery = `SELECT * FROM ${tableName} WHERE ${columnName} LIKE '${character.toUpperCase()}%'`;
     } else if (option.toUpperCase() === "END") {
-      sqlQuery = `SELECT * FROM ${tableName} WHERE ${columnName} LIKE '%${character.toLowerCase()}%'`;
+      sqlQuery = `SELECT * FROM ${tableName} WHERE ${columnName} LIKE '%${character.toLowerCase()}'`;
     } else {
       sqlQuery = `SELECT * FROM ${tableName} WHERE ${columnName} LIKE '%${character}%'`;
     }

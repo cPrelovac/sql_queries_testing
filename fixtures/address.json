@@ -1,0 +1,78 @@
+{
+  "TC1": {
+    "columns": [
+      "address",
+      "address2",
+      "district",
+      "city_id",
+      "postal_code",
+      "phone"
+    ],
+    "values": [
+      "123 Main St",
+      "Apt 4B",
+      "District 1",
+      100,
+      "12345",
+      "123-456-7890"
+    ]
+  },
+  "TC2": {
+    "columns": [
+      "address_id",
+      "address",
+      "address2",
+      "district",
+      "city_id",
+      "postal_code",
+      "phone"
+    ],
+    "values": [
+      1,
+      "456 Maple Ave",
+      "Unit 2A",
+      "District 2",
+      101,
+      "67890",
+      "098-765-4321"
+    ]
+  },
+  "TC3": {
+    "columns": [
+      "address",
+      "address2",
+      "district",
+      "city_id",
+      "postal_code",
+      "phone"
+    ],
+    "values": [
+      "This address is definitely more than fifty characters long and to be sure I will insert even more text",
+      "Apt 4B",
+      "District 1",
+      100,
+      "12345",
+      "123-456-7890"
+    ]
+  },
+  "TC4": {
+    "columns": [
+      "address_id",
+      "address",
+      "address2",
+      "district",
+      "city_id",
+      "postal_code",
+      "phone"
+    ],
+    "values": [
+      null,
+      "This",
+      "Apt 4B",
+      "District 1",
+      100,
+      "12345",
+      "123-456-7890"
+    ]
+  }
+}
