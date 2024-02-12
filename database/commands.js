@@ -83,6 +83,38 @@ const queries = {
       throw err;
     }
   },
+  executeOrderedQuery: async ({
+    tableName,
+    columns,
+    orderByColumn,
+    orderByFunction,
+    order,
+    limit,
+  }) => {
+    try {
+      // Construct the SQL query
+      let sqlQuery = `SELECT ${
+        columns ? columns.join(", ") : "*"
+      } FROM ${tableName}`;
+
+      // Add the ORDER BY clause if orderByColumn is provided
+      if (orderByColumn) {
+        sqlQuery += ` ORDER BY ${
+          orderByFunction ? `${orderByFunction}(` : ""
+        }${orderByColumn}${orderByFunction ? ")" : ""} ${order ? order : ""}`;
+        if (limit) {
+          sqlQuery += ` LIMIT ${limit}`;
+        }
+      }
+
+      const res = await client.query(sqlQuery);
+      return res.rows;
+    } catch (err) {
+      console.error(err.stack);
+      throw err;
+    }
+  },
+
   likeOperator: async ({ tableName, columnName, option, character }) => {
     const validOptions = ["END", "START", "CONTAINS"];
     if (!validOptions.includes(option.toUpperCase())) {
@@ -118,6 +150,8 @@ const queries = {
     columnName,
     operator,
     conditions,
+    operatorColumn,
+    distinct = false, // Add a new parameter for DISTINCT
   }) => {
     // List of valid SQL aggregate functions
     const validOperators = ["COUNT", "SUM", "AVG", "MIN", "MAX"];
@@ -141,7 +175,17 @@ const queries = {
     if (operator.toUpperCase() === "COUNT" && !columnName) {
       sqlQuery = `SELECT COUNT(*) FROM ${tableName}`;
     } else {
-      sqlQuery = `SELECT ${operator}(${columnName}) FROM ${tableName}`;
+      // Add DISTINCT if it's set to true
+      sqlQuery = `SELECT ${operator}(${
+        distinct ? "DISTINCT " : ""
+      }${columnName}) FROM ${tableName}`;
+    }
+    if (operator.toUpperCase() === "AVG") {
+      if (operatorColumn) {
+        sqlQuery = `SELECT AVG (${operatorColumn}(${columnName})) FROM ${tableName}`;
+      } else {
+        sqlQuery = `SELECT AVG (${columnName}) FROM ${tableName}`;
+      }
     }
 
     // Add the WHERE clause if conditions are provided

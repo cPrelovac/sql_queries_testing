@@ -74,5 +74,38 @@
       "12345",
       "123-456-7890"
     ]
+  },
+  "TC5": {
+    "query": "district",
+    "values": ["Alberta"]
+  },
+  "TC6": {
+    "columnName": "city_id",
+    "operator": "COUNT"
+  },
+  "TC7": {
+    "columnName": "district",
+    "orderByFunction": "LENGTH",
+    "order": "DESC",
+    "limit": 2
+  },
+  "TC8": {
+    "columnName": "phone",
+    "orderByFunction": "LENGTH",
+    "order": "ASC",
+    "limit": 2
+  },
+  "TC9": {
+    "columnName": "postal_code",
+    "operatorColumn": "LENGTH",
+    "operator": "AVG"
+  },
+  "TC10": {
+    "query": ["last_update"],
+    "values": ["2010-01-01"]
+  },
+  "TC11": {
+    "query": ["address2"],
+    "values": ["IS NOT NULL"]
   }
 }
