@@ -33,7 +33,7 @@ describe("Actor table", function () {
   before(async function () {
     table = await queries.cloneTable(table);
   });
-  it.only("Test Case 1: Insert a valid record", async function () {
+  it("Test Case 1: Insert a valid record", async function () {
     try {
       await queries.insertInto({
         tableName: table,

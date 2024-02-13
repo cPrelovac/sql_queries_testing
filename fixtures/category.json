@@ -1,0 +1,32 @@
+{
+  "TC1": {
+    "columns": ["category_id", "name", "last_update"],
+    "values": [17, "Test", "2024-02-12"]
+  },
+  "TC2": {
+    "columns": ["category_id", "name", "last_update"],
+    "values": [1, "Test", "2024-02-12"]
+  },
+  "TC3": {
+    "columns": ["name"],
+    "values": [
+      "This is a long string with more than 25 characters and test is expected to fail"
+    ],
+    "error_messages": [
+      "value too long for type character varying(25)",
+      "Address longer than 25 characters was inserted"
+    ]
+  },
+  "TC5": {
+    "columns": ["name"],
+    "values": ["New"]
+  },
+  "TC6": {
+    "columns": ["name"],
+    "values": ["Games"]
+  },
+  "TC7": {
+    "query": ["last_update"],
+    "values": ["2004-01-01"]
+  }
+}

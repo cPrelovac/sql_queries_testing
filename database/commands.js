@@ -49,6 +49,39 @@ const queries = {
       throw err;
     }
   },
+  deleteFrom: async ({ tableName, columns, values, operator }) => {
+    try {
+      let sqlQuery = `DELETE FROM ${tableName}`;
+      if (!tableName) {
+        throw new Error("Table name is required!");
+      }
+      if (columns && columns.length > 0) {
+        const conditions = columns.map((condition, index) => {
+          if (values[index] === null) {
+            return `${condition} IS NULL`;
+          } else if (typeof values[index] === "string") {
+            if (values[index] === "NOT NULL") {
+              return `${condition} IS NOT NULL`;
+            } else if (values[index].startsWith(">")) {
+              return `${condition}>'${values[index].substring(1)}'`;
+            } else if (values[index].startsWith("<")) {
+              return `${condition}<'${values[index].substring(1)}'`;
+            } else {
+              return `${condition}='${values[index]}'`;
+            }
+          } else {
+            return `${condition}=${values[index]}`;
+          }
+        });
+        sqlQuery += ` WHERE ${conditions.join(` ${operator} `)}`;
+      }
+      // Construct the SQL query
+      const res = await client.query(sqlQuery);
+      return res;
+    } catch (err) {
+      console.error(err.stack);
+    }
+  },
   executeQuery: async ({ tableName, columns, values, operator, query }) => {
     try {
       let sqlQuery = `SELECT ${
