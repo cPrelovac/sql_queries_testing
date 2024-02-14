@@ -42,7 +42,16 @@ const queries = {
         columns ? columns.join(", ") : ""
       }) VALUES (${formattedValues})`;
 
-      const res = await client.query(sqlQuery);
+      const res = await client
+        .query(sqlQuery)
+        .then((resp) => {
+          // console.log(resp);
+          return resp;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw err;
+        });
       return res;
     } catch (err) {
       // console.error(err.stack);

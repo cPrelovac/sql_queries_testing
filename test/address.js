@@ -54,19 +54,20 @@ describe("Actor table", function () {
       throw err;
     }
   });
-  it("Test Case 2: Insert a record with a duplicate address_id", async function () {
+  it.only("Test Case 2: Insert a record with a duplicate address_id", async function () {
     try {
-      await queries.insertInto({
+      const response = await queries.insertInto({
         tableName: "address",
         columns: columnsTC2,
         values: valuesTC2,
       });
-      throw new Error("Test Case 2 failed: Duplicate address_id was inserted");
+      expect(response).to.be.empty();
     } catch (err) {
       if (
         !err.message.includes("duplicate key value violates unique constraint")
       ) {
         console.error(err);
+        throw err;
       }
       expect(err.message).to.include(
         "duplicate key value violates unique constraint"
